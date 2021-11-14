@@ -36,6 +36,10 @@ RESPONSE_TIMEOUT = 10
 
 error_log = ''
 
+file_name_exclude_filter = ['取消', '摘要', '基金', '更正', '英文', '补充']
+
+file_name_include_filter = ['年度']
+
 def standardize_dir(dir_str):
     assert (os.path.exists(dir_str)), 'Such directory \"' + str(dir_str) + '\" does not exists!'
     if dir_str[len(dir_str) - 1] != '/':
@@ -45,7 +49,7 @@ def standardize_dir(dir_str):
 
 
 # 参数：页面id(每页条目个数由MAX_PAGESIZE控制)，是否返回总条目数(bool)
-def get_response(page_num,stack_code,return_total_count=False,START_DATE = '2013-01-01',END_DATE = '2018-01-01'):
+def get_response(page_num,stack_code,return_total_count=False,START_DATE = '2015-01-01',END_DATE = '2020-01-01'):
 #     query = {
 #         'stock': stack_code,
 #         'searchkey': '',
@@ -108,10 +112,21 @@ def get_response(page_num,stack_code,return_total_count=False,START_DATE = '2013
                 str(each['secCode']) + str(each['secName']) + str(each['announcementTitle']) + '.'  + '(' + str(each['adjunctSize'])  + 'k)' +
                 file_link[-file_link[::-1].find('.') - 1:]  # 最后一项是获取文件类型后缀名
             )
+            # if file_name.endswith('.PDF') or file_name.endswith('.pdf'):
+            #     if '取消' not in file_name and '摘要' not in file_name and '年度' in file_name and\
+            #     '更正' not in file_name and '英文' not in file_name and '补充' not in file_name:
+            #         result_list.append([file_name, file_link])
+
+            bRet = False
             if file_name.endswith('.PDF') or file_name.endswith('.pdf'):
-                if '取消' not in file_name and '摘要' not in file_name and '年度' in file_name and\
-                '更正' not in file_name and '英文' not in file_name and '补充' not in file_name:
-                    result_list.append([file_name, file_link])
+                for filter in file_name_exclude_filter:
+                    if filter not in file_name:
+                        bRet = True
+                    else:
+                        bRet = False
+            if bRet:        
+                result_list.append([file_name, file_link])
+
         return result_list
 
 
@@ -204,9 +219,9 @@ def get_url(OUT_DIR,stack_code_set,START_DATE,END_DATE):
 
 if __name__ == '__main__':
     
-    START_DATE = '2013'  
-    END_DATE = '2016'  #str(time.strftime('%Y-%m-%d')) 
-    OUT_DIR = r'F:\github\Financial-data-collection-from-web-\output_files'
+    START_DATE = '2019'  
+    END_DATE = '2021'  #str(time.strftime('%Y-%m-%d')) 
+    OUT_DIR = r'F:\github\FinanceReportCollection\output_files'
         
     stack_code_set=['000002','000004']
     

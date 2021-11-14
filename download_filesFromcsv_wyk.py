@@ -56,7 +56,7 @@ def download_pdf(path,MAX_COUNT = 5):
 
 
 if __name__ == '__main__':
-    DST_DIR = r'F:\github\Financial-data-collection-from-web-\output_files/'
-    LIST_FILE = r'F:\github\Financial-data-collection-from-web-\output_files/report_20130101-20160101.csv'    
+    DST_DIR = r'F:\github\FinanceReportCollection\download_files'
+    LIST_FILE = r'F:\github\FinanceReportCollection\output_files/report_20190101-20210101.csv'    
     download_pdf(LIST_FILE)
     
