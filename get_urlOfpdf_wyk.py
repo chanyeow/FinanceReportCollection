@@ -13,7 +13,7 @@ import os
 import time
 import requests
 import xlrd
-
+import platform
 
 OUTPUT_FILENAME = 'report'
 # 板块类型：沪市：shmb；深市：szse；深主板：szmb；中小板：szzx；创业板：szcy；
@@ -29,7 +29,6 @@ HEADER = {
     'X-Requested-With: XMLHttpRequest'
 }
 
-
 MAX_PAGESIZE = 50
 MAX_RELOAD_TIMES = 5
 RESPONSE_TIMEOUT = 10
@@ -40,6 +39,39 @@ file_name_exclude_filter = ['取消', '摘要', '基金', '更正', '英文', '�
 
 file_name_include_filter = ['年度']
 
+def __filter_illegal_filename(filename):
+    illegal_char = {
+        ' ': '',
+        '*': '',
+        '/': '-',
+        '\\': '-',
+        ':': '-',
+        '?': '-',
+        '"': '',
+        '<': '',
+        '>': '',
+        '|': '',
+        '－': '-',
+        '—': '-',
+        '（': '(',
+        '）': ')',
+        'Ａ': 'A',
+        'Ｂ': 'B',
+        'Ｈ': 'H',
+        '，': ',',
+        '。': '.',
+        '：': '-',
+        '！': '_',
+        '？': '-',
+        '“': '"',
+        '”': '"',
+        '‘': '',
+        '’': ''
+    }
+    for item in illegal_char.items():
+        filename = filename.replace(item[0], item[1])
+    return filename
+
 def standardize_dir(dir_str):
     assert (os.path.exists(dir_str)), 'Such directory \"' + str(dir_str) + '\" does not exists!'
     if dir_str[len(dir_str) - 1] != '/':
@@ -47,6 +79,11 @@ def standardize_dir(dir_str):
     else:
         return dir_str
 
+def __log_error(err_msg):
+    err_msg = str(err_msg)
+    print(err_msg)
+    with open(OUT_DIR + 'error.log', 'a', encoding='gb18030') as err_writer:
+        err_writer.write(err_msg + '\n')
 
 # 参数：页面id(每页条目个数由MAX_PAGESIZE控制)，是否返回总条目数(bool)
 def get_response(page_num,stack_code,return_total_count=False,START_DATE = '2015-01-01',END_DATE = '2020-01-01'):
@@ -129,47 +166,6 @@ def get_response(page_num,stack_code,return_total_count=False,START_DATE = '2015
 
         return result_list
 
-
-def __log_error(err_msg):
-    err_msg = str(err_msg)
-    print(err_msg)
-    with open(OUT_DIR + 'error.log', 'a', encoding='gb18030') as err_writer:
-        err_writer.write(err_msg + '\n')
-
-
-def __filter_illegal_filename(filename):
-    illegal_char = {
-        ' ': '',
-        '*': '',
-        '/': '-',
-        '\\': '-',
-        ':': '-',
-        '?': '-',
-        '"': '',
-        '<': '',
-        '>': '',
-        '|': '',
-        '－': '-',
-        '—': '-',
-        '（': '(',
-        '）': ')',
-        'Ａ': 'A',
-        'Ｂ': 'B',
-        'Ｈ': 'H',
-        '，': ',',
-        '。': '.',
-        '：': '-',
-        '！': '_',
-        '？': '-',
-        '“': '"',
-        '”': '"',
-        '‘': '',
-        '’': ''
-    }
-    for item in illegal_char.items():
-        filename = filename.replace(item[0], item[1])
-    return filename
-
 def get_url(OUT_DIR,stack_code_set,START_DATE,END_DATE):
     START_DATE=START_DATE+'-01-01'
     END_DATE=END_DATE+'-01-01'
@@ -218,10 +214,14 @@ def get_url(OUT_DIR,stack_code_set,START_DATE,END_DATE):
     return output_csv_file
 
 if __name__ == '__main__':
+
+    if platform.system()=="windows":
+        OUT_DIR = r'F:\github\FinanceReportCollection\output_files'
+    else:
+        OUT_DIR = r'/Users/chenyao/workspace/FinanceReportCollection/output_files'
     
     START_DATE = '2019'  
     END_DATE = '2021'  #str(time.strftime('%Y-%m-%d')) 
-    OUT_DIR = r'F:\github\FinanceReportCollection\output_files'
         
     stack_code_set=['000002','000004']
     
