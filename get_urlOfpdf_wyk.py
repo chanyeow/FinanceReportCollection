@@ -177,7 +177,6 @@ def get_url(OUT_DIR,stack_code_set,START_DATE,END_DATE):
     #with open(output_csv_file, 'w', newline='', encoding='gb18030') as csv_out:
     csv_out=open(output_csv_file, 'w', newline='', encoding='gb18030')
     writer = csv.writer(csv_out)
-    #stack_code_set=['000002','000004','000005','000006','000007','000008']
     
     start=time.time()
     
