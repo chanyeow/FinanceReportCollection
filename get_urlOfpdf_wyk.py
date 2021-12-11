@@ -214,7 +214,7 @@ def get_url(OUT_DIR,stack_code_set,START_DATE,END_DATE):
 
 if __name__ == '__main__':
 
-    if platform.system()=="windows":
+    if platform.system()=="Windows":
         OUT_DIR = r'F:\github\FinanceReportCollection\output_files'
     else:
         OUT_DIR = r'/Users/chenyao/workspace/FinanceReportCollection/output_files'
