@@ -13,7 +13,9 @@ from pathlib import Path
 
 #ERROR_DEFINE
 ERROR_STOCKLIST_NOTFOUND = 1
-ERROR_WORKBOOK_NOTFOUND = 1
+ERROR_STOCKLIST_SHEETNOTFOUND = 2
+
+ERROR_WORKBOOK_SHEETNOTFOUND = 3
 
 
 RESPONSE_TIMEOUT = 10
@@ -60,7 +62,7 @@ def test2():
         print(e)
 
 def test():
-    wb = openpyxl.load_workbook(FILE_NAME_OUTPUT)
+    wb = openpyxl.load_workbook(FILE_NAME_STOCK_LIST)
     sh = wb['Sheet']
     ce = sh.cell(row = 1,column = 1)   # 读取第一行，第一列的数据
     print(ce.value)
@@ -73,13 +75,13 @@ def test():
     wb.close()
 
 def copy_stock_code(stockList, excelOutPut):
-    stockListSheet = stockList["Sheet1"]
+    stockListSheet = stockList['Sheet']
     if not stockListSheet:
         return ERROR_STOCKLIST_NOTFOUND
 
-    excelOutPutSheet = excelOutPut["Sheet1"]
+    excelOutPutSheet = excelOutPut['Sheet']
     if not excelOutPutSheet:
-        return ERROR_WORKBOOK_NOTFOUND
+        return ERROR_WORKBOOK_SHEETNOTFOUND
 
     max_row = stockListSheet.max_row #最大行数
     max_column = stockListSheet.max_column #最大列数
@@ -91,9 +93,7 @@ def copy_stock_code(stockList, excelOutPut):
             cell1=stockListSheet[i].value           #获取data单元格数据
             excelOutPutSheet[i].value=cell1           #赋值到test单元格
 
-    excelOutPut.save() 
-
-
+    excelOutPut.save(FILE_NAME_OUTPUT)
 
 def get_stock_list():
     file = Path(FILE_NAME_STOCK_LIST)
@@ -112,16 +112,65 @@ def open_excel():
 def close_excel(wb):
     wb.close()
 
+def open_copy_base_data():
+    #load output excel
+    file = Path(FILE_NAME_OUTPUT)
+    if not file.is_file():
+        wb = openpyxl.Workbook()
+        wb.save(FILE_NAME_OUTPUT)
+    excelOutPut = openpyxl.load_workbook(FILE_NAME_OUTPUT) 
+
+    #local stock list
+    file = Path(FILE_NAME_STOCK_LIST)
+    if file.is_file():
+        stockList = openpyxl.load_workbook(FILE_NAME_STOCK_LIST)  
+    else:
+        return ERROR_STOCKLIST_NOTFOUND
+
+    #获取sheet页
+    sheets1 = excelOutPut.get_sheet_names()
+    sheets2 = stockList.get_sheet_names()
+    excelOutPutSheet = excelOutPut.get_sheet_by_name(sheets1[0])
+    stockListSheet = stockList.get_sheet_by_name(sheets2[0])
+
+    #最大行数
+    max_row = stockListSheet.max_row 
+    #最大列数
+    max_column = stockListSheet.max_column 
+
+    testMap = {}
+    for m in range(1, max_row + 1):
+        i ='%s%d'%('a', m)
+        key = stockListSheet[i].value
+        i ='%s%d'%('b', m)
+        value = stockListSheet[i].value
+        testMap[key] = value
+
+    for x, y in testMap.items():
+        print(x, y)
+
+    # for m in range(1, max_row + 1):
+    #     for n in range(97, 97 + max_column): #chr(97)='a'
+    #         n=chr(n)                        #ASCII字符
+    #         i='%s%d'%(n,m)                  #单元格编号
+    #         cell1 = stockListSheet[i].value           #获取data单元格数据
+    #         excelOutPutSheet[i].value = cell1           #赋值到test单元格
+    # excelOutPut.save(FILE_NAME_OUTPUT)
+             
+
 if __name__ == '__main__':
-    excelOutPut = open_excel()
-    stockList = get_stock_list()
-    if not stockList:
-        print('股票列表：stocklist.xlsx文件未找到')
-        close_excel(excelOutPut)
-        sys.exit(0)
+    # excelOutPut = open_excel()
+    # stockList = get_stock_list()
+    # if not stockList:
+    #     print('股票列表：stocklist.xlsx文件未找到')
+    #     close_excel(excelOutPut)
+    #     sys.exit(0)
         
-    copy_stock_code(stockList, excelOutPut)
+    # copy_stock_code(stockList, excelOutPut)
 
 
-    close_excel(excelOutPut)
-    close_excel(stockList)
+    # close_excel(excelOutPut)
+    # close_excel(stockList)
+
+    ret = open_copy_base_data()
+    print(ret)
