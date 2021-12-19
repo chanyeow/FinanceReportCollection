@@ -1,67 +1,59 @@
-Attribute VB_Name = "Ä£¿é9"
-Sub getSlumpedStocks()
-Attribute getSlumpedStocks.VB_ProcData.VB_Invoke_Func = " \n14"
+Attribute VB_Name = "Ä£ï¿½ï¿½10"
+Sub calcSlumpedStocks()
+Attribute calcSlumpedStocks.VB_ProcData.VB_Invoke_Func = " \n14"
 '
-' getSlumpedStocks ºê
+' calcSlumpedStocks ï¿½ï¿½
 '
 
 '
-    If MsgBox("µã»÷È·ÈÏ½«¿ªÊ¼×¥È¡Êý¾Ý£¬Ê±¼ä½Ï³¤£¨Çë¿´×óÏÂ½Ç½ø¶ÈÌõ£¬×¥È¡ÖÐÇëÎð²Ù×÷£©", vbYesNo) <> vbYes Then Exit Sub
+    iSlumpedPercent = Sheet11.Range("H5")
+    iPricePercent = Sheet11.Range("H6")
+    iMaxRow = Sheet11.[a65536].End(xlUp).Row
     
-    iOriginIndex = 2    '¿ªÊ¼index
-    iIndex = iOriginIndex
-    iSelfIndex = 5
-    iMaxRow = Sheet9.[a65536].End(xlUp).Row + iIndex
+    sNotic = "ï¿½Ç·ï¿½ï¿½ï¿½" & iSlumpedPercent & "%ï¿½ï¿½ï¿½ï¿½É¸Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½"
     
-    'Worksheets(1).UsedRange.Columns.Count   'Sheet9.Range("IV1").End(xlToLeft).Column
-    'iMaxLine = Sheet11.Cells.SpecialCells(xlCellTypeLastCell).Column
-    'Sheet11.Range("a5" & total_row).ClearContents
+    If MsgBox(sNotic, vbYesNo) <> vbYes Then Exit Sub
     
-    'iMaxRow = 5
+    iBeginLine = 2
+    iWriteIndex = 2
+    Dim bPriceLess  As Boolean
+    Dim iPriceDiv As Single
     
-    Dim obj
-    Set obj = CreateObject("WinHttp.WinHttpRequest.5.1")
-    Do
-        Sheet11.Cells(iSelfIndex, "a") = Sheet9.Cells(iIndex, 1)
-        Sheet11.Cells(iSelfIndex, "b") = Sheet9.Cells(iIndex, 2)
+    For i = iBeginLine To iMaxRow
+        iTotalKLine = Sheet11.Range("E" & i)
+        iSlumpedKLine = Sheet11.Range("F" & i)
+        iFirstKlinePrice = Sheet11.Cells(i, "c")
+        iLastKlinePrice = Sheet11.Cells(i, "d")
         
-        code = Sheet9.Cells(iIndex, 1)
-        marketCode = getMarketCode(code)
-        
-        ' ÖÜK
-        ' Url = "http://74.push2his.eastmoney.com/api/qt/stock/kline/get?cb=jQuery112407697307125612478_1638805346501&secid=" & marketCode & "." & code & "&ut=fa5fd1943c7b386f172d6893dbfba10b&fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57%2Cf58%2Cf59%2Cf60%2Cf61&klt=101&fqt=0&beg=20170101&end=20500101&smplmt=460&lmt=1000000&_=1638805346528"
-        
-        ' ÔÂk
-        Url = "http://90.push2his.eastmoney.com/api/qt/stock/kline/get?cb=jQuery112402816109881259974_1638893884237&secid=" & marketCode & "." & code & "&ut=fa5fd1943c7b386f172d6893dbfba10b&fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57%2Cf58%2Cf59%2Cf60%2Cf61&klt=103&fqt=0&beg=20170101&end=20500101&smplmt=460&lmt=1000000&_=1638893884280"
-        
-        obj.Open "GET", Url, True
-        obj.send
-        obj.WaitForResponse
-        t1 = BytesToBstr(obj.ResponseBody, "UTF-8")
-        t1 = Split(t1, "(")(1)
-        Set x = CreateObject("ScriptControl"): x.Language = "JScript"
-        x.AddCode ("var query = (" & t1)
-        
-        rData = x.Eval("query.data")
-        If rData <> "Null" Then
-            ikLineLen = x.Eval("query.data.klines.length")
-            
-            iLineBegin = 3
-            For i = 1 To ikLineLen
-                sStr = x.Eval("query.data.klines[" & i - 1 & "]")
-                Sheet11.Cells(iSelfIndex, iLineBegin) = Split(sStr, ",")(2)
-                
-                iLineBegin = iLineBegin + 1
-            Next
-        Else
-            Sheet11.Cells(iIndex, "a").Interior.ColorIndex = 3
-            Sheet11.Cells(iIndex, "b").Interior.ColorIndex = 3
+        If iTotalKLine <> 0 And iFirstKlinePrice <> 0 Then
+            iDiv = iSlumpedKLine / iTotalKLine * 100
+            If iLastKlinePrice > iFirstKlinePrice Then
+                bPriceLess = False
+            Else
+                iPriceDiv = (iFirstKlinePrice - iLastKlinePrice) / iFirstKlinePrice * 100
+                If iPriceDiv > iPricePercent Then
+                bPriceLess = True
+            Else
+                bPriceLess = False
+            End If
         End If
-        
-        Application.StatusBar = GetProgress(iIndex - iOriginIndex, iMaxRow - iOriginIndex)
-        
-        iIndex = iIndex + 1
-        iSelfIndex = iSelfIndex + 1
-    Loop Until iIndex > iMaxRow
-    MsgBox "A¹ÉËùÓÐÊý¾Ý×¥È¡Íê±Ï", , "ÌáÊ¾"
+            If (iDiv > iSlumpedPercent) And bPriceLess Then
+                Sheet11.Cells(i, "a").Interior.ColorIndex = 3
+                
+                Sheet11.Cells(iWriteIndex, "j") = Sheet11.Cells(i, "b")
+                Sheet11.Cells(iWriteIndex, "k") = iPriceDiv
+                iWriteIndex = iWriteIndex + 1
+            End If
+        End If
+    Next
+    
+    MsgBox "ï¿½ï¿½ï¿½ï¿½É¸Ñ¡ï¿½ï¿½ï¿½", , "ï¿½ï¿½Ê¾"
+
+End Sub
+
+
+Sub clearSlumped()
+    iMaxRow = Sheet11.[a65536].End(xlUp).Row
+    iMaxLine = Sheet11.Cells.SpecialCells(xlCellTypeLastCell).Column
+    Sheet11.Range(Cells(2, 1), Cells(iMaxRow, iMaxLine)).Interior.ColorIndex = 0
 End Sub
