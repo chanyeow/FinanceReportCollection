@@ -131,6 +131,9 @@ def loadDataFromFileTest(code, path):
 
 if __name__ == '__main__':
     filePath = os.getcwd() + '/' + "allStockKline" + '/'
+    if not os.path.exists(filePath):
+        os.makedirs(filePath)
+
     filePath = standardize_dir(filePath)
     main(filePath)
     loadDataFromFileTest('000001', filePath)

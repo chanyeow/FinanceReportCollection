@@ -7,8 +7,10 @@ import xlrd
 import platform
 import os.path
 import sys
+import json
 
 from pathlib import Path
+from util import standardize_dir
 
 #ERROR_DEFINE
 ERROR_STOCKLIST_NOTFOUND = 1
@@ -217,5 +219,45 @@ def main():
     wb.close
     print('数据全部处理完毕！')
 
+def addTotalMarketValue():
+    print('数据爬取完毕，开始处理数据...')
+
+    filePath = os.getcwd() + '/' + "allStockInfo" + '/'
+    filePath = standardize_dir(filePath)
+
+    file = Path(FILE_NAME_OUTPUT)
+    if not file.is_file():
+        wb = openpyxl.Workbook()
+        wb.save(FILE_NAME_OUTPUT)
+    wb = openpyxl.load_workbook(FILE_NAME_OUTPUT)
+    allSheest = wb.get_sheet_names()
+    ws = wb.get_sheet_by_name(allSheest[0])
+    max_row = ws.max_row         #最大行数
+    # max_column = ws.max_column   #最大列数
+
+    iIndex = 0
+    for m in range(2, max_row):
+        iIndex += 1
+
+        code = ws['%s%d'%('a', m)].value
+        fileName = filePath + str(code)
+        file = Path(fileName)
+        if not file.is_file():
+            continue
+
+        file = open(fileName, 'r')
+        data = file.read()
+        file.close
+        dict = json.loads(data).get("data")   
+
+        i ='%s%d'%('w', m)
+        ws[i] = dict["f116"]
+        print("正在处理 %s 的数据(%d/%d)"%(code, iIndex, max_row - 1))
+
+    wb.save(FILE_NAME_OUTPUT)
+    wb.close
+    print('数据全部处理完毕！')
+
 if __name__ == '__main__':
-    main()
+    # main()
+    addTotalMarketValue()
