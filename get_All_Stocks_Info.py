@@ -111,6 +111,7 @@ def main(filePath):
         fileName = filePath + str(code)
         file = Path(fileName)
         if file.is_file():
+            print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
             continue
 
         secid = get_code_secid(code)
@@ -128,15 +129,11 @@ def main(filePath):
 
 def loadDataFromFileTest(code, path):
     fileName = path + str(code)
-
     file = open(fileName, 'r')
     data = file.read()
-
     dict = json.loads(data).get("data")
     print(dict)
-        
     file.close()
-    
 
 if __name__ == '__main__':
     filePath = os.getcwd() + '/' + "allStockInfo" + '/'

@@ -1,22 +1,12 @@
 import openpyxl
-import math
 import os
 import time
 import requests
-import xlrd
-import platform
 import os.path
-import sys
-import xml.dom.minidom
 import json
 
 from pathlib import Path
-from xml.dom.minidom import parse
-
-#ERROR_DEFINE
-ERROR_STOCKLIST_NOTFOUND = 1
-ERROR_STOCKLIST_SHEETNOTFOUND = 2
-ERROR_WORKBOOK_SHEETNOTFOUND = 3
+from util import standardize_dir
 
 RESPONSE_TIMEOUT = 10
 
@@ -79,7 +69,6 @@ def get_all_stock_code():
         mData[key] = value
     return mData
 
-
 PROXIES = {
     # "http": "http://101.132.189.87:9090", 
     "http": "http://101.133.239.96:8080", 
@@ -90,7 +79,7 @@ def spidering(secid):
     try:
         # r = requests.post(URL, QUERY, HEADER, proxies=PROXIES, timeout=RESPONSE_TIMEOUT)
         r = requests.post(URL, QUERY, HEADER, timeout=RESPONSE_TIMEOUT)
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         print(e)
 
     r.encoding = 'utf-8'
@@ -106,22 +95,42 @@ def spidering(secid):
         print(e)
     return data
 
-def main():
+def main(filePath):
     mData = get_all_stock_code()
+
     iTotalCount = len(mData)
     iIndex = 0
     for code, name in mData.items():
         iIndex += 1
+
+        fileName = filePath + str(code)
+        file = Path(fileName)
+        if file.is_file():
+            print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
+            continue
+
         secid = get_code_secid(code)
         allData = spidering(secid)
-        
+
+        with open(fileName, 'w') as f:
+            f.write(allData)
+            f.close()
+
         print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
         time.sleep(0.01)
 
-        if iIndex == 1:
-            break
+    print("全部数据爬取完毕, 一共 %d 个(%s)"%(iTotalCount, filePath))
+
+def loadDataFromFileTest(code, path):
+    fileName = path + str(code)
+    file = open(fileName, 'r')
+    data = file.read()
+    dict = json.loads(data).get("data")
+    print(dict)
+    file.close()
 
 if __name__ == '__main__':
-    file_name = 'klines.xml'
-    last_file_name = 'klines_old.xml'
-    main(file_name, last_file_name)
+    filePath = os.getcwd() + '/' + "allStockKline" + '/'
+    filePath = standardize_dir(filePath)
+    main(filePath)
+    loadDataFromFileTest('000001', filePath)
