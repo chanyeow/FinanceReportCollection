@@ -4,3 +4,17 @@ https://push2.eastmoney.com/api/qt/ulist.np/get?fid=f3&pi=0&pz=20&po=1&ut=bd1d9d
 //个股当日基本信息
 https://push2.eastmoney.com/api/qt/stock/get?secid=0.000831&ut=f057cbcbce2a86e2866ab8877db1d059&fields=f57,f58,f43,f169,f170,f168,f47,f48,f86,f46,f44,f60,f45,f168,f164,f50,f171&np=1&fltt=2&invt=2&cb=jQuery18001401303719732594_1640620156161&_=1640620156255
 
+//股东研究
+link :
+	http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/Index?type=web&code=SZ000831#
+
+example
+	http://emweb.securities.eastmoney.com/PC_HSF10/OperationsRequired/OperationsRequiredAjax?times=1&code=SZ000831&code=SZ000831
+	
+分析：
+	response中搜索：
+	主要指标中，按年度的报告：zyzb_and
+	股东分析：gdrs
+
+//财务报表
+http://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/ZYZBAjaxNew?type=0&code=SH600780
