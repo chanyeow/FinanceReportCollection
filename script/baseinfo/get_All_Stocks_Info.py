@@ -6,7 +6,7 @@ import os.path
 import json
 
 from pathlib import Path
-from util import standardize_dir
+from script.util.util import standardize_dir
 
 RESPONSE_TIMEOUT = 10
 

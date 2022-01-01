@@ -10,7 +10,7 @@ import sys
 import json
 
 from pathlib import Path
-from util import standardize_dir
+from script.util.util import standardize_dir
 
 #ERROR_DEFINE
 ERROR_STOCKLIST_NOTFOUND = 1
