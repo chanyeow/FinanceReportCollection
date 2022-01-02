@@ -10,7 +10,8 @@ import sys
 import json
 
 from pathlib import Path
-from script.util.util import standardize_dir
+from util.util import standardize_dir
+from util.util import get_all_stock_code
 
 #ERROR_DEFINE
 ERROR_STOCKLIST_NOTFOUND = 1
@@ -88,33 +89,6 @@ def get_code_secid(code):
         return '%d.%s'%(marketid, code)
     else:
         return ''
-
-FILE_NAME_STOCK_LIST = 'stocklist.xlsx'
-def get_all_stock_code():
-    mData = {}
-    #load file
-    file = Path(FILE_NAME_STOCK_LIST)
-    if file.is_file():
-        stockList = openpyxl.load_workbook(FILE_NAME_STOCK_LIST)  
-    else:
-        return mData
-
-    #get sheet name
-    sheets = stockList.get_sheet_names()
-    stockListSheet = stockList.get_sheet_by_name(sheets[0])
-    #最大行数
-    max_row = stockListSheet.max_row 
-    #最大列数
-    max_column = stockListSheet.max_column 
-
-    for m in range(1, max_row + 1):
-        i ='%s%d'%('a', m)
-        key = stockListSheet[i].value
-        i ='%s%d'%('b', m)
-        value = stockListSheet[i].value
-        mData[key] = value
-    return mData
-
 
 PROXIES = {
     # "http": "http://101.132.189.87:9090", 
