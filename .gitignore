@@ -1,4 +1,7 @@
 *.pdf
 *.log
-allStockInfo/*
-allStockKline/*
+financeData/*
+output_files/*
+original_data/*
+download_files/*
+__pycache__/*
