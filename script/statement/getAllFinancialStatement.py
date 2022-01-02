@@ -4,11 +4,13 @@ import time
 import requests
 import os.path
 import json
+import sys
+sys.path.append(os.getcwd() + "/script/util")
 import util
 
 from pathlib import Path
-from util.util import standardize_dir
-from util.util import get_all_stock_code
+from util import standardize_dir
+from util import get_all_stock_code
 
 RESPONSE_TIMEOUT = 10
 

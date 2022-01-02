@@ -16,10 +16,8 @@ RESPONSE_TIMEOUT = 10
 
 URL= 'http://push2.eastmoney.com/api/qt/stock/get'
 HEADER = {
-    #'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-    #'X-Requested-With': 'XMLHttpRequest'
-    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3878.400 QQBrowser/10.8.4518.400',
-    'X-Requested-With: XMLHttpRequest'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3878.400 QQBrowser/10.8.4518.400',
+    'X-Requested-With': 'XMLHttpRequest'
 }
 
 QUERY = {

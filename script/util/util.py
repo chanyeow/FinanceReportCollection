@@ -69,3 +69,32 @@ def get_all_stock_code():
         value = stockListSheet[i].value
         mData[key] = value
     return mData
+
+def get_code_secid(code):
+    if code != '':
+        if code[0] == '6':
+            marketid = 1
+        else:
+            marketid = 0
+        return '%d.%s'%(marketid, code)
+    else:
+        return ''
+
+def get_market_id(code):
+    if code != '':
+        if code[0] == '6':
+            return 1
+        else:
+            return 0
+    else:
+        return 0
+
+def get_marketcode(code):
+    if code != '':
+        if code[0] == '6':
+            marketName = 'SH'
+        else:
+            marketName = 'SZ'
+        return '%s%s'%(marketName, code)
+    else:
+        return ''

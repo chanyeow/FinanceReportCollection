@@ -18,3 +18,19 @@ example
 
 //财务报表
 http://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/ZYZBAjaxNew?type=0&code=SH600780
+type=0/1/2 对应3个页签
+    //按报告期（同比） ReportDateType=0，ReportType=1
+    //按年（同比） ReportDateType=1，ReportType=1
+    //单季度（同比） ReportDateType=0，ReportType=2
+        // 分别加载三大报表，和对应的tab事件
+        initReportTabChange("zcfzb");
+        initReportTabChange("lrb");
+        initReportTabChange("xjllb");
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/zcfzbAjaxNew?companyType=4&reportDateType=0&reportType=1&dates=2021-09-30%2C2021-06-30%2C2021-03-31%2C2020-12-31%2C2020-09-30&code=SH600780
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/lrbAjaxNew?companyType=4&reportDateType=0&reportType=1&dates=2021-09-30%2C2021-06-30%2C2021-03-31%2C2020-12-31%2C2020-09-30&code=SH600780
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/xjllbAjaxNew?companyType=4&reportDateType=0&reportType=1&dates=2021-09-30%2C2021-06-30%2C2021-03-31%2C2020-12-31%2C2020-09-30&code=SH600780
+
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/DBFXAjaxNew?code=SZ300059
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/zcfzbDateAjaxNew?companyType=4&reportDateType=0&code=SZ300059
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/lrbDateAjaxNew?companyType=4&reportDateType=0&code=SZ300059
+https://emweb.securities.eastmoney.com/PC_HSF10/NewFinanceAnalysis/xjllbDateAjaxNew?companyType=4&reportDateType=0&code=SZ300059
