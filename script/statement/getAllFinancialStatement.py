@@ -7,116 +7,90 @@ import json
 import sys
 sys.path.append(os.getcwd() + "/script/util")
 import util
+import string
 
 from pathlib import Path
 from util import standardize_dir
-from util import get_all_stock_code
 
-RESPONSE_TIMEOUT = 10
+def main():
+    print('数据爬取完毕，开始处理数据...')
+    dataPath = standardize_dir(os.getcwd() + "/financeData/allStockStatement/")
+    outputFileName = os.getcwd() + "/股票.xlsx"
+    file = Path(outputFileName)
+    if not file.is_file():
+        wb = openpyxl.Workbook()
+        wb.save(outputFileName)
 
-URL= 'http://push2.eastmoney.com/api/qt/stock/get'
-HEADER = {
-    #'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-    #'X-Requested-With': 'XMLHttpRequest'
-    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3878.400 QQBrowser/10.8.4518.400',
-    'X-Requested-With: XMLHttpRequest'
-}
+    wb = openpyxl.load_workbook(outputFileName)
+    allSheest = wb.get_sheet_names()
+    ws = wb.get_sheet_by_name(allSheest[0])
+    max_row = ws.max_row         #最大行数
+    # max_column = ws.max_column   #最大列数
 
-QUERY = {
-    #'cb' : 'jQuery112401545144085503931_1639893352029',
-    'secid' : '0.000001',
-    'ut' : 'fa5fd1943c7b386f172d6893dbfba10b',
-    'invt' : 2,
-    'fltt' : 2,
-    'fields' : 'f43,f57,f58,f169,f170,f46,f44,f51,f168,f47,f164,f163,f116,f60,f45,f52,f50,f48,f167,f117,f71,f161,f49,f530,f135,f136,f137,f138,f139,f141,f142,f144,f145,f147,f148,f140,f143,f146,f149,f55,f62,f162,f92,f173,f104,f105,f84,f85,f183,f184,f185,f186,f187,f188,f189,f190,f191,f192,f107,f111,f86,f177,f78,f110,f260,f261,f262,f263,f264,f267,f268,f250,f251,f252,f253,f254,f255,f256,f257,f258,f266,f269,f270,f271,f273,f274,f275,f127,f199,f128,f193,f196,f194,f195,f197,f80,f280,f281,f282,f284,f285,f286,f287,f292,f293,f181,f294,f295,f279,f288',
-    '_' : '1639893352185',
-}
-
-class Stock:
-    def __init__(self, code, name, jsonData):
-        self.code = code
-        self.name = name
-        self.jsonData = jsonData
-
-    def get_All_info(self):
-        return self.code, self.name, self.jsonData
-
-def get_code_secid(code):
-    if code != '':
-        if code[0] == '6':
-            marketid = 1
-        else:
-            marketid = 0
-        return '%d.%s'%(marketid, code)
-    else:
-        return ''
-
-
-
-PROXIES = {
-    # "http": "http://101.132.189.87:9090", 
-    "http": "http://101.133.239.96:8080", 
-}
-
-def spidering(secid):
-    QUERY['secid'] = secid
-    try:
-        # r = requests.post(URL, QUERY, HEADER, proxies=PROXIES, timeout=RESPONSE_TIMEOUT)
-        r = requests.post(URL, QUERY, HEADER, timeout=RESPONSE_TIMEOUT)
-    # except Exception as e:
-    except requests.exceptions.RequestException as e:
-        print(e)
-    r.encoding = 'UTF-8'
-    if r.status_code == requests.codes.ok and r.text != '':
-        # data = r.json()
-        data = r.text
-    else:
-        data = {}
-
-    try:
-        r.close()
-    except Exception as e:
-        print(e)
-    return data
-    
-def main(filePath):
-    mData = get_all_stock_code()
-
-    iTotalCount = len(mData)
     iIndex = 0
-    for code, name in mData.items():
+    for m in range(2, max_row):
         iIndex += 1
 
-        fileName = filePath + str(code)
+        code = ws['%s%d'%('a', m)].value
+        fileName = dataPath + str(code)
         file = Path(fileName)
-        if file.is_file():
-            print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
+        if not file.is_file():
             continue
 
-        secid = get_code_secid(code)
-        allData = spidering(secid)
-        # allData = filter_illegal_string(allData)
+        file = open(fileName, 'r')
+        data = file.read()
+        file.close
+        dict = json.loads(data).get("data")
 
-        with open(fileName, 'w') as f:
-            f.write(allData)
-            f.close()       
+        iSum_TOTALOPERATEREVETZ = 0 # 营业增速
+        iCount_TOTALOPERATEREVETZ = 0
+        iList = []
+        for v in dict:
+            iCur = v['TOTALOPERATEREVETZ']
+            if not iCur:
+                continue
 
-        print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
-        time.sleep(0.01)
+            iCount_TOTALOPERATEREVETZ += 1
+            iSum_TOTALOPERATEREVETZ += iCur
+            iList.append(iCur)
+
+        # 最新营业额
+        # sCell ='%s%d'%('x', m)
+        # iSum_TOTALOPERATEREVE = dict[0]['TOTALOPERATEREVE']
+        # sReportName = dict[0]['REPORT_TYPE']
+        # if iSum_TOTALOPERATEREVE and sReportName:
+        #     if sReportName.find("季") > 0:
+        #         ws[sCell] = iSum_TOTALOPERATEREVE * 4
+        #     else:
+        #         ws[sCell] = iSum_TOTALOPERATEREVE
+        iSum_TOTALOPERATEREVE = dict[0]['TOTALOPERATEREVE']
+        sCell ='%s%d'%('x', m)
+        if iSum_TOTALOPERATEREVE:
+            ws[sCell] = iSum_TOTALOPERATEREVE   # 最新季度营业额
+
+        # 平均增速
+        sCell ='%s%d'%('y', m)
+        if iCount_TOTALOPERATEREVETZ == 0:
+            ws[sCell] = 0
+        else:
+            ws[sCell] = iSum_TOTALOPERATEREVETZ / iCount_TOTALOPERATEREVETZ     
         
-    print("全部数据爬取完毕, 一共 %d 个(%s)"%(iTotalCount, filePath))
+        sMinCell ='%s%d'%('z', m)
+        sMaxCell ='%s%d'%('aa', m)
+        if len(iList) > 0:
+            ws[sMinCell] = min(iList)   # 最小增速
+            ws[sMaxCell] = max(iList)   # 最大增速
+        else:
+            ws[sMinCell] = 0
+            ws[sMaxCell] = 0
 
-def loadDataFromFileTest(code, path):
-    fileName = path + str(code)
-    file = open(fileName, 'r')
-    data = file.read()
-    dict = json.loads(data).get("data")
-    print(dict)
-    file.close()
+        print("正在处理 %s 的数据(%d/%d)"%(code, iIndex, max_row - 1))
+
+    wb.save(outputFileName)
+    wb.close
+    print('数据全部处理完毕！')
 
 if __name__ == '__main__':
-    filePath = os.getcwd() + '/' + "allStockInfo" + '/'
-    filePath = standardize_dir(filePath)
-    main(filePath)
-    loadDataFromFileTest('000001', filePath)
+    main()
+
 

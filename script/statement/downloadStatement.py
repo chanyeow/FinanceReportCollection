@@ -78,9 +78,6 @@ def main(filePath):
             vErrorCode.append(code)    
         print("正在爬取 %s - %s 的数据(%d/%d)"%(code, name, iIndex, iTotalCount))
         time.sleep(0.01)
-
-        if iIndex > 5:
-            break
         
     print("全部数据爬取完毕, 一共 %d 个(%s)"%(iTotalCount, filePath))
     sErr = ""
@@ -93,7 +90,7 @@ def loadDataFromFileTest(code, path):
     file = open(fileName, 'r')
     data = file.read()
     dict = json.loads(data).get("data")
-    # print(dict.SECUCODE)
+    print(dict[0]['SECUCODE'])
     file.close()
 
 if __name__ == '__main__':
