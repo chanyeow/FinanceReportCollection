@@ -1,3 +1,13 @@
+'''
+Author: chanyeow && chanyeow1995@gmail.com
+Date: 2021-12-27 23:34:29
+LastEditors: chanyeow 767138730@qq.com
+LastEditTime: 2022-10-06 14:19:54
+Description: 获得全部股票的月K收盘价
+Copyright (c) 2022 by chanyeow 767138730@qq.com, All Rights Reserved. 
+'''
+
+
 import openpyxl
 import os
 import time

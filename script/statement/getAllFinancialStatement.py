@@ -1,3 +1,12 @@
+'''
+Author: chanyeow && chanyeow1995@gmail.com
+Date: 2022-01-01 22:53:18
+LastEditors: chanyeow 767138730@qq.com
+LastEditTime: 2022-10-06 14:23:31
+Description: 根据业绩处理数据
+Copyright (c) 2022 by chanyeow 767138730@qq.com, All Rights Reserved. 
+'''
+
 import openpyxl
 import os
 import time

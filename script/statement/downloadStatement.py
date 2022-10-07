@@ -1,3 +1,13 @@
+'''
+Author: chanyeow && chanyeow1995@gmail.com
+Date: 2022-01-02 16:14:35
+LastEditors: chanyeow 767138730@qq.com
+LastEditTime: 2022-10-06 14:20:19
+Description: 下载全部股票的基础信息，保存在./financeData下
+Copyright (c) 2022 by chanyeow 767138730@qq.com, All Rights Reserved. 
+'''
+
+
 import openpyxl
 import os
 import time

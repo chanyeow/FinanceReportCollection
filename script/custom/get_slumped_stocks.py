@@ -1,3 +1,13 @@
+'''
+Author: chanyeow && chanyeow1995@gmail.com
+Date: 2021-12-27 23:34:29
+LastEditors: chanyeow 767138730@qq.com
+LastEditTime: 2022-10-06 14:18:47
+Description: 爬取全部股票中涨幅很小，但是业绩巨大改善的股票
+Copyright (c) 2022 by chanyeow 767138730@qq.com, All Rights Reserved. 
+'''
+
+
 import openpyxl
 import math
 import os

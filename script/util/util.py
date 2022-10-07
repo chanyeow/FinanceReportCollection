@@ -47,7 +47,7 @@ def standardize_dir(dir_str):
 def get_all_stock_code():
     mData = {}
     #load file
-    filepath = os.getcwd() + '/data/stocklist.xlsx'
+    filepath = os.getcwd() + '/financeData/stocklist.xlsx'
     file = Path(filepath)
     if file.is_file():
         stockList = openpyxl.load_workbook(filepath)  

@@ -20,3 +20,19 @@ pageNum=1&pageSize=30&column=szse&tabName=fulltext&plate=&stock=601318%2C9900002
 000		gssz
 002
 300
+
+http://www.cninfo.com.cn/new/hisAnnouncement/query
+
+POST /new/hisAnnouncement/query HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Content-Length: 163
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Cookie: JSESSIONID=AD50EF6F0E1C2D1BE23C81F71510A704; routeId=.uc2; insert_cookie=45380249; _sp_id.2141=a1a664b5-ee22-42c1-ad08-4d3e819d1ac1.1665035914.1.1665035988.1665035914.cf7a0cbd-0ce5-4743-9648-595d66051ac5
+Host: www.cninfo.com.cn
+Origin: http://www.cninfo.com.cn
+Proxy-Connection: keep-alive
+Referer: http://www.cninfo.com.cn/new/commonUrl/pageOfSearch?url=disclosure/list/search
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36
+X-Requested-With: XMLHttpRequest
