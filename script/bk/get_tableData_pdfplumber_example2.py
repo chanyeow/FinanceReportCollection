@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 21 03:06:40 2019
-
-this just is a test file , a common extract file will be done later.
-该文件可以获得pdf文件中的表格信息并返回，pdfplumber对表格的处理能力强于pdfminer
-
-@author: herr_kun
-"""
-
-
 
 import pdfplumber
 import re

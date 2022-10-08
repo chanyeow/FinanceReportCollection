@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 21 03:16:22 2019
-因为PDF中的表格有的是封闭式的，有的是开放式的，对开放式的表格的处理不是很准确，识别不出来是table
-所以就进不去table的判断，因此最终使用直接解析text数据的方式，也就是untiled 6 文件
-@author: herr_kun
-"""
-
-
-
-
 import pdfplumber
 import re
 

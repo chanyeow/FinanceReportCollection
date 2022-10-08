@@ -2,7 +2,6 @@
 """
 Created on Thu Apr 25 22:12:37 2019
 
-@author: herr_kun
 """
 
 from read_csv_stockids_wyk import parase_id

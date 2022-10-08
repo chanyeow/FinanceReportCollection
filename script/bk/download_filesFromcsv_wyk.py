@@ -1,15 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 21 16:02:00 2019
-下载所有的PDF
-@author: herr_kun
-"""
-
-#!/usr/bin/python
-# coding = utf-8
-# __author__='Lilly'
-# description:下载csv中列出的pdf年报
-
 import csv
 import os
 import time

@@ -2,7 +2,6 @@
 """
 Created on Sun Apr 21 01:42:51 2019
 通过网页的爬取获得最终的pdf地址，并且写入到最后的csv文件
-@author: herr_kun
 """
 
 # coding = utf-8

@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 26 15:40:31 2019
-
-@author: Herr-kun
-"""
-
 from get_urlOfpdf_wyk import standardize_dir,__log_error,__filter_illegal_filename
 from read_csv_stockids_wyk import parase_id
 #from get_urlOfpdf_wyk import *

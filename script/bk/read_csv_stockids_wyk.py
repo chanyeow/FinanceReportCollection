@@ -2,7 +2,6 @@
 """
 Created on Sun Apr 21 10:22:45 2019
 读取并获得数据Excel中所有的股票ID
-@author: herr_kun
 """
 
 import xlrd

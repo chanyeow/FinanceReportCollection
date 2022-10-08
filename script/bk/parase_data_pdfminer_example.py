@@ -3,7 +3,6 @@
 Created on Sun Apr 21 15:48:10 2019
 使用pdfminer来进行数据的处理，而不是pdfplumber,他可以进行一些数据的处理，还未完善
 可以使用URopen来获得网页PDF内容并记性解析
-@author: herr_kun
 """
 
 from pdfminer.pdfparser import PDFParser, PDFDocument

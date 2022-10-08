@@ -14,7 +14,6 @@ run here
 ****time to open PDF file is 0.5510315895080566
 ****time to processing PDF file is 8.935511112213135
 
-@author: herr_kun
 """
 
 

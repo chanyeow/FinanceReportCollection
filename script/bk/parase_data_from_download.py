@@ -1,23 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Apr 27 15:44:18 2019
-
-@author: hit
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Apr 27 15:16:35 2019
-
-@author: hit
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 26 15:40:31 2019
-
-@author: Herr-kun
-"""
 
 from get_urlOfpdf_wyk import standardize_dir,__log_error,__filter_illegal_filename
 from read_csv_stockids_wyk import parase_id
@@ -217,25 +197,31 @@ def parase_pdf(table_keyword,inside_keyword,outside_keyword):
     global parase_out
     global OUT_DIR
     global file_names
-    #rLock2.acquire()
-    for file_name in file_names[6400:]:
-        print('--------now processing {}---------'.format(file_name))
-        try:
+    while True:
+        #rLock2.acquire()
+        if len(file_names):
+            print('--------{}---------'.format(len(file_names)))
+            file_name=file_names[0]
+            file_names.remove(file_name)
             if file_name.endswith('.PDF') or file_name.endswith('.pdf'):
                 path =os.path.join(OUT_DIR,file_name)
                 print('get pdf address')
+
                 try:
                     pdf = pdfplumber.open(path,password='')
                 except:
-                    continue
                     print("*************open pdf error*******************")
-                    
                 print("*************open pdf*******************")
-    
+
                 find_table=0
                 find_pre_table=0
                 find_keyword=0
                 find_keyword_outside=0
+                name_find=[]
+                value_find=[]
+                page_find=[]
+                #for page in pdf.pages:
+                    #print(page.extract_text())
                 begin_index=int(len(pdf.pages)/2)
                 for i in range(begin_index,len(pdf.pages)):  
                     if find_table:
@@ -285,9 +271,9 @@ def parase_pdf(table_keyword,inside_keyword,outside_keyword):
                                         temp_value=data_list[j+1]
                                         temp_value=temp_value.replace(',','')
                                         temp_value=float(temp_value)
-                                        #name_find.append(data_list[j])
-                                        #value_find.append(temp_value)
-                                        #page_find.append(i)
+                                        name_find.append(data_list[j])
+                                        value_find.append(temp_value)
+                                        page_find.append(i)
                                         try:
                                             parase_out_writer.writerows([[file_name,data_list[j],str(temp_value),data_list[j+1],str(i)]]) 
                                         except:
@@ -302,19 +288,18 @@ def parase_pdf(table_keyword,inside_keyword,outside_keyword):
                    
                 pdf.close()
                 
+                os.remove(path)    #  pdf.close 后删除文件 否则太多了
+
                 print('****time to processing PDF file is ')
                 
             else:
-                print('not pdf files')
-                continue
-        except:
-            print("*************Some thing error*******************")
-            continue
-        
-    #parase_out.close()
+                path =os.path.join(OUT_DIR,file_name)
+                os.remove(path)
             
-    #return name_find,value_find,page_find    # 一定不要把return放到while里面，遇到return会立即结束
+    return name_find,value_find,page_find    # 一定不要把return放到while里面，遇到return会立即结束
 
+def parase_saved():
+    global parase_out_writer
     
 
 
@@ -328,14 +313,24 @@ outside_keyword=['收到']
 
 file_names=os.listdir(OUT_DIR)
 
-parase_out_file_path=OUT_DIR+'/parase_out_file5.csv'
+parase_out_file_path=OUT_DIR+'/parase_out_file2.csv'
 parase_out=open(parase_out_file_path, 'w', newline='', encoding='gb18030')
 parase_out_writer = csv.writer(parase_out)
 
+parase_pdf_thread = threading.Thread(target=parase_pdf, args=(table_keyword,inside_keyword,outside_keyword))
+parase_pdf_thread2 = threading.Thread(target=parase_pdf, args=(table_keyword,inside_keyword,outside_keyword))
+parase_pdf_thread3 = threading.Thread(target=parase_pdf, args=(table_keyword,inside_keyword,outside_keyword))
+#parade_file_save = threading.Timer(5.0, parase_saved, [])
 
-parase_pdf(table_keyword,inside_keyword,outside_keyword)
+
+parase_pdf_thread.start()
+parase_pdf_thread2.start()
+parase_pdf_thread3.start()
 
 
+parase_pdf_thread.join()
+parase_pdf_thread2.join()
+parase_pdf_thread3.join()
 
 
 

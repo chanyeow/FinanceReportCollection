@@ -5,7 +5,7 @@ Created on Sun Apr 21 01:42:51 2019
 修改源文件：file_link = 'http://www.cninfo.com.cn/' + str(each['adjunctUrl']) 为
 file_link = 'http://static.cninfo.com.cn/' + str(each['adjunctUrl'])
 否则因为原网站更新升级了，无法打开原来的文件
-@author: herr_kun
+
 """
 
 # coding = utf-8
